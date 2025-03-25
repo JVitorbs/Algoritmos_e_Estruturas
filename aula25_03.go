@@ -1,4 +1,4 @@
-//Codigo da aula do dia 25.03.2025
+// Codigo da aula do dia 25.03.2025
 package main
 
 import (
@@ -8,14 +8,14 @@ import (
 
 type List interface {
 	Size() int
-	Get(index int) int	
-	Add(e int) 
+	Get(index int) int
+	Add(e int)
 	AddOnIndex(e int, index int)
 	Remove(index int)
 }
 
 type ArrayList struct {
-	v []int
+	v        []int
 	inserted int
 }
 
@@ -23,13 +23,13 @@ func (l *ArrayList) Init(size int) {
 	l.v = make([]int, size)
 }
 
-func (l *ArrayList) Get(index int) int {
+func (l *ArrayList) Get(index int) int { //O(4) = O(1), constante
 	if index >= 0 && index < l.inserted {
 		return l.v[index]
 	} else {
 		return -1 //error
 	}
-	
+
 }
 
 func (l *ArrayList) Size() int {
@@ -37,31 +37,31 @@ func (l *ArrayList) Size() int {
 }
 
 func (l *ArrayList) doubleV() {
-	newV := make([]int,2*l.inserted)
-	for i := 0; i < l.inserted; i++{
+	newV := make([]int, 2*l.inserted)
+	for i := 0; i < l.inserted; i++ {
 		newV[i] = l.v[i]
 	}
 	l.v = newV
 }
 
 func (l *ArrayList) Add(e int) {
-	if l.inserted == len(l.v){
+	if l.inserted == len(l.v) {
 		l.doubleV()
 	}
 	l.v[l.inserted] = e
 	l.inserted++
 }
 
-func (l *ArrayList) AddOnIndex(e int, index int){
-	if index < 0 || index > l.inserted{
+func (l *ArrayList) AddOnIndex(e int, index int) {
+	if index < 0 || index > l.inserted {
 		return
 	}
 
-	if l.inserted == len(l.v){
+	if l.inserted == len(l.v) {
 		l.doubleV()
 	}
 
-	for i := l.inserted; i > index;i-- {
+	for i := l.inserted; i > index; i-- {
 		l.v[i] = l.v[i-1]
 	}
 	l.v[index] = e
@@ -70,21 +70,20 @@ func (l *ArrayList) AddOnIndex(e int, index int){
 }
 
 func (l *ArrayList) Remove(index int) {
-	if index >= 0 && index < l.inserted{
-		for i:= index; ;i++ {
-			
+	if index >= 0 && index < l.inserted {
+		for i := index; ; i++ {
+
 		}
 	}
 }
 
-func main(){
+func main() {
 	l := &ArrayList{}
 	l.Init(10)
-	for i:=1; i <= 50; i++{
+	for i := 1; i <= 50; i++ {
 		l.Add(i)
 	}
-	l.AddOnIndex(0,0)
+	l.AddOnIndex(0, 0)
 	fmt.Println(l.Get(49))
-	
 
 }
