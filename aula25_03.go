@@ -69,12 +69,22 @@ func (l *ArrayList) AddOnIndex(e int, index int){
 
 }
 
+func (l *ArrayList) Remove(index int) {
+	if index >= 0 && index < l.inserted{
+		for i:= index; ;i++ {
+			
+		}
+	}
+}
+
 func main(){
 	l := &ArrayList{}
 	l.Init(10)
 	for i:=1; i <= 50; i++{
 		l.Add(i)
 	}
+	l.AddOnIndex(0,0)
 	fmt.Println(l.Get(49))
+	
 
 }
