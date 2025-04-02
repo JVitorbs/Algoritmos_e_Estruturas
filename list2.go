@@ -19,7 +19,7 @@ type ArrayList struct {
 }
 
 func (l *ArrayList) Init(size int) {
-	l.v = make([]int, size)
+	l.v = make([]int,7 size)
 }
 
 func (l *ArrayList) Get(index int) (int,error) { //O(1),Ômega(1), então Theta(1)
