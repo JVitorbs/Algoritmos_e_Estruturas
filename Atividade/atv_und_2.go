@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
-	"time"
 	"math"
+	"math/rand"
+	"reflect"
+	"runtime"
+	"time"
 )
 
 // Selection Sort
@@ -101,7 +103,7 @@ func quickSort(arr []int) []int {
 		return arr
 	}
 
-	pivot := arr[len(arr)-1]
+	pivot := arr[len(arr)/2]
 	var left, right []int
 
 	for i := 0; i < len(arr)-1; i++ {
@@ -183,7 +185,7 @@ func countingSort(arr []int) []int {
 // Função para gerar vetores
 func generateArrays(size int, ordered bool, descending bool) []int {
 	arr := make([]int, size)
-	
+
 	if ordered {
 		for i := 0; i < size; i++ {
 			if descending {
@@ -208,12 +210,11 @@ func testAlgorithms(algorithms []func([]int) []int, sizes []int, cases map[strin
 	ordered    bool
 	descending bool
 }) map[string]map[string][]float64 {
-	
 	results := make(map[string]map[string][]float64)
 	for _, alg := range algorithms {
-		results[getFunctionName(alg)] = make(map[string][]float64)
+		results[getSimpleFunctionName(alg)] = make(map[string][]float64)
 		for caseName := range cases {
-			results[getFunctionName(alg)][caseName] = make([]float64, len(sizes))
+			results[getSimpleFunctionName(alg)][caseName] = make([]float64, len(sizes))
 		}
 	}
 
@@ -221,27 +222,41 @@ func testAlgorithms(algorithms []func([]int) []int, sizes []int, cases map[strin
 		fmt.Printf("\nTestando com tamanho: %d\n", size)
 		for caseName, params := range cases {
 			arr := generateArrays(size, params.ordered, params.descending)
-			
+
 			for _, algorithm := range algorithms {
 				testArr := make([]int, len(arr))
 				copy(testArr, arr)
-				
+
+				algName := getSimpleFunctionName(algorithm)
+
 				startTime := time.Now()
 				algorithm(testArr)
 				elapsedTime := time.Since(startTime).Seconds()
-				
-				results[getFunctionName(algorithm)][caseName][i] = elapsedTime
-				fmt.Printf("%-20s - %-15s - Tamanho %d: %.6f segundos\n", 
-					getFunctionName(algorithm), caseName, size, elapsedTime)
+
+				results[algName][caseName][i] = elapsedTime
+				fmt.Printf("Algoritmo: %-18s | Caso: %-20s | Tamanho: %-8d | Tempo: %12.6f segundos\n",
+					algName, caseName, size, elapsedTime)
 			}
 		}
 	}
 	return results
 }
 
-// Helper para obter o nome da função
+// Função corrigida para obter o nome da função
 func getFunctionName(f func([]int) []int) string {
-	return fmt.Sprintf("%T", f)[10:]
+	return runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
+}
+
+// Função para extrair apenas o nome simples da função (sem o caminho do pacote)
+func getSimpleFunctionName(f func([]int) []int) string {
+	fullName := runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
+	// Extrai apenas a parte após o último ponto
+	for i := len(fullName) - 1; i >= 0; i-- {
+		if fullName[i] == '.' {
+			return fullName[i+1:]
+		}
+	}
+	return fullName
 }
 
 func main() {
@@ -257,15 +272,15 @@ func main() {
 		countingSort,
 	}
 
-	sizes := []int{int(math.Pow10(3)), int(math.Pow10(4)), int(math.Pow10(5))}
+	sizes := []int{int(math.Pow10(5)), int(math.Pow10(6))}
 
 	cases := map[string]struct {
 		ordered    bool
 		descending bool
 	}{
-		"Ordenado Crescente":  {true, false},
+		"Ordenado Crescente":   {true, false},
 		"Ordenado Decrescente": {true, true},
-		"Desordenado":         {false, false},
+		"Desordenado":          {false, false},
 	}
 
 	results := testAlgorithms(algorithms, sizes, cases)
