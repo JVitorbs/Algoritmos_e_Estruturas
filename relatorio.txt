@@ -1,0 +1,51 @@
+RELATÓRIO DE DESEMPENHO DE ALGORITMOS DE ORDENAÇÃO
+=================================================
+
+COMPLEXIDADE TEÓRICA:
+Selection Sort: O(n²) em todos os casos
+Bubble Sort: O(n) melhor caso, O(n²) pior caso
+Insertion Sort: O(n) melhor caso, O(n²) pior caso
+Merge Sort: O(n log n) em todos os casos
+Quick Sort: O(n log n) médio, O(n²) pior caso
+Quick Sort Randomizado: O(n log n) em todos os casos
+Counting Sort: O(n + k) onde k é o intervalo de valores
+
+CASO: Ordenado Crescente
+Algoritmo                      |     1000 |    10000 |   100000
+------------------------------------------------------------
+main.quickSort                 |   0.0035 |   0.4097 |  64.8600
+main.randomizedQuickSort       |   0.0002 |   0.0029 |   0.0352
+main.countingSort              |   0.0000 |   0.0004 |   0.0016
+main.selectionSort             |   0.0006 |   0.0472 |   4.8443
+main.bubbleSort                |   0.0000 |   0.0000 |   0.0001
+main.insertionSort             |   0.0000 |   0.0000 |   0.0001
+main.mergeSort                 |   0.0001 |   0.0007 |   0.0079
+
+CASO: Ordenado Decrescente
+Algoritmo                      |     1000 |    10000 |   100000
+------------------------------------------------------------
+main.randomizedQuickSort       |   0.0002 |   0.0028 |   0.0392
+main.countingSort              |   0.0000 |   0.0000 |   0.0007
+main.selectionSort             |   0.0004 |   0.0537 |   4.2588
+main.bubbleSort                |   0.0005 |   0.0516 |   4.7713
+main.insertionSort             |   0.0003 |   0.0329 |   3.4345
+main.mergeSort                 |   0.0001 |   0.0006 |   0.0103
+main.quickSort                 |   0.0047 |   0.5228 |  77.3415
+
+CASO: Desordenado
+Algoritmo                      |     1000 |    10000 |   100000
+------------------------------------------------------------
+main.bubbleSort                |   0.0009 |   0.0515 |  13.8785
+main.insertionSort             |   0.0004 |   0.0165 |   1.6049
+main.mergeSort                 |   0.0001 |   0.0011 |   0.0158
+main.quickSort                 |   0.0005 |   0.0032 |   0.0490
+main.randomizedQuickSort       |   0.0002 |   0.0033 |   0.0705
+main.countingSort              |   0.0000 |   0.0002 |   0.0012
+main.selectionSort             |   0.0005 |   0.0482 |   7.3268
+
+ANÁLISE:
+1. Algoritmos O(n²) são adequados apenas para pequenos conjuntos
+2. Merge Sort mostra desempenho consistente em todos os casos
+3. Quick Sort padrão tem pior desempenho em vetores ordenados
+4. Quick Sort randomizado evita o pior caso
+5. Counting Sort é o mais rápido quando aplicável

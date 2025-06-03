@@ -2,10 +2,15 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
-	"time"
 	"math"
+	"math/rand"
+	"os"
+	"reflect"
+	"runtime"
+	"time"
 )
+
+// 1. Algoritmos de Ordenação
 
 // Selection Sort
 func selectionSort(arr []int) []int {
@@ -180,7 +185,14 @@ func countingSort(arr []int) []int {
 	return output
 }
 
-// Função para gerar vetores
+// 2. Funções Auxiliares
+
+// getFunctionName obtém o nome da função
+func getFunctionName(f func([]int) []int) string {
+	return runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
+}
+
+// generateArrays gera vetores de teste
 func generateArrays(size int, ordered bool, descending bool) []int {
 	arr := make([]int, size)
 	
@@ -203,7 +215,7 @@ func generateArrays(size int, ordered bool, descending bool) []int {
 	return arr
 }
 
-// Função para testar os algoritmos
+// testAlgorithms testa todos os algoritmos
 func testAlgorithms(algorithms []func([]int) []int, sizes []int, cases map[string]struct {
 	ordered    bool
 	descending bool
@@ -211,9 +223,10 @@ func testAlgorithms(algorithms []func([]int) []int, sizes []int, cases map[strin
 	
 	results := make(map[string]map[string][]float64)
 	for _, alg := range algorithms {
-		results[getFunctionName(alg)] = make(map[string][]float64)
+		algName := getFunctionName(alg)
+		results[algName] = make(map[string][]float64)
 		for caseName := range cases {
-			results[getFunctionName(alg)][caseName] = make([]float64, len(sizes))
+			results[algName][caseName] = make([]float64, len(sizes))
 		}
 	}
 
@@ -230,20 +243,102 @@ func testAlgorithms(algorithms []func([]int) []int, sizes []int, cases map[strin
 				algorithm(testArr)
 				elapsedTime := time.Since(startTime).Seconds()
 				
-				results[getFunctionName(algorithm)][caseName][i] = elapsedTime
+				algName := getFunctionName(algorithm)
+				results[algName][caseName][i] = elapsedTime
 				fmt.Printf("%-20s - %-15s - Tamanho %d: %.6f segundos\n", 
-					getFunctionName(algorithm), caseName, size, elapsedTime)
+					algName, caseName, size, elapsedTime)
 			}
 		}
 	}
 	return results
 }
 
-// Helper para obter o nome da função
-func getFunctionName(f func([]int) []int) string {
-	return fmt.Sprintf("%T", f)[10:]
+// 3. Relatório e Visualização
+
+// printResults imprime os resultados em formato de tabela
+func printResults(results map[string]map[string][]float64, sizes []int) {
+	fmt.Println("\nRESULTADOS:")
+	fmt.Println("==============================================")
+	
+	for caseName := range results[getFunctionName(selectionSort)] {
+		fmt.Printf("\nCaso: %s\n", caseName)
+		fmt.Printf("%-30s", "Algoritmo")
+		for _, size := range sizes {
+			fmt.Printf(" | %8d", size)
+		}
+		fmt.Println("\n" + repeatChar("-", 30 + len(sizes)*10))
+		
+		for algName, algCases := range results {
+			fmt.Printf("%-30s", algName)
+			for _, t := range algCases[caseName] {
+				fmt.Printf(" | %8.4f", t)
+			}
+			fmt.Println()
+		}
+	}
 }
 
+// repeatChar auxiliar para criar linhas
+func repeatChar(char string, n int) string {
+	result := ""
+	for i := 0; i < n; i++ {
+		result += char
+	}
+	return result
+}
+
+// generateReport gera um relatório em arquivo de texto
+func generateReport(results map[string]map[string][]float64, sizes []int) {
+	file, err := os.Create("relatorio.txt")
+	if err != nil {
+		fmt.Println("Erro ao criar arquivo:", err)
+		return
+	}
+	defer file.Close()
+
+	fmt.Fprintln(file, "RELATÓRIO DE DESEMPENHO DE ALGORITMOS DE ORDENAÇÃO")
+	fmt.Fprintln(file, "=================================================")
+	
+	// Complexidade teórica
+	fmt.Fprintln(file, "\nCOMPLEXIDADE TEÓRICA:")
+	fmt.Fprintln(file, "Selection Sort: O(n²) em todos os casos")
+	fmt.Fprintln(file, "Bubble Sort: O(n) melhor caso, O(n²) pior caso")
+	fmt.Fprintln(file, "Insertion Sort: O(n) melhor caso, O(n²) pior caso")
+	fmt.Fprintln(file, "Merge Sort: O(n log n) em todos os casos")
+	fmt.Fprintln(file, "Quick Sort: O(n log n) médio, O(n²) pior caso")
+	fmt.Fprintln(file, "Quick Sort Randomizado: O(n log n) em todos os casos")
+	fmt.Fprintln(file, "Counting Sort: O(n + k) onde k é o intervalo de valores")
+	
+	// Resultados
+	for caseName := range results[getFunctionName(selectionSort)] {
+		fmt.Fprintf(file, "\nCASO: %s\n", caseName)
+		fmt.Fprintf(file, "%-30s", "Algoritmo")
+		for _, size := range sizes {
+			fmt.Fprintf(file, " | %8d", size)
+		}
+		fmt.Fprintln(file, "\n" + repeatChar("-", 30 + len(sizes)*10))
+		
+		for algName, algCases := range results {
+			fmt.Fprintf(file, "%-30s", algName)
+			for _, t := range algCases[caseName] {
+				fmt.Fprintf(file, " | %8.4f", t)
+			}
+			fmt.Fprintln(file)
+		}
+	}
+	
+	// Análise
+	fmt.Fprintln(file, "\nANÁLISE:")
+	fmt.Fprintln(file, "1. Algoritmos O(n²) são adequados apenas para pequenos conjuntos")
+	fmt.Fprintln(file, "2. Merge Sort mostra desempenho consistente em todos os casos")
+	fmt.Fprintln(file, "3. Quick Sort padrão tem pior desempenho em vetores ordenados")
+	fmt.Fprintln(file, "4. Quick Sort randomizado evita o pior caso")
+	fmt.Fprintln(file, "5. Counting Sort é o mais rápido quando aplicável")
+	
+	fmt.Println("\nRelatório gerado como relatorio.txt")
+}
+
+// 4. Função principal
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
@@ -270,13 +365,9 @@ func main() {
 
 	results := testAlgorithms(algorithms, sizes, cases)
 
-	// Exibir resultados em tabela
-	fmt.Println("\nResultados consolidados:")
-	for alg, algCases := range results {
-		fmt.Printf("\nAlgoritmo: %s\n", alg)
-		fmt.Println("Caso\t\tTamanho 1e3\tTamanho 1e4\tTamanho 1e5")
-		for caseName, times := range algCases {
-			fmt.Printf("%-15s\t%.6f\t%.6f\t%.6f\n", caseName, times[0], times[1], times[2])
-		}
-	}
+	// Exibir resultados
+	printResults(results, sizes)
+
+	// Gerar relatório
+	generateReport(results, sizes)
 }
