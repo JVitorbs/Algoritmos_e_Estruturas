@@ -24,3 +24,4 @@
     - func (node *BSTNode) Rebalance() *BSTNode
 
 - [ ] (5) Adicionar chamada para funcoes Rebalance() e UpdateProprieties() nas funcoes Add() e Remove()
+    - func (node *BSTNode) Add(val int) *BSTNode
