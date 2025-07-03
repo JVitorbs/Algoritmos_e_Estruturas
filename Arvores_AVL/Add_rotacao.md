@@ -1,6 +1,6 @@
 # Vamos criar uma arvore AVL
 ## **Revisar codigo de BST e seguir os seguintes passos**
-- [x](0) Adicionar adicionar altura e fator de balanco no struct
+- [x] (0) Adicionar adicionar altura e fator de balanco no struct
 
 
 (1) implementar funcao func (node *BSTNode) UpdatePropieties() [ ]
