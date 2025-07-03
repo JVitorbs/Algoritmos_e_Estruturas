@@ -15,12 +15,12 @@
         - -> (2) Nova Raiz
 
 - [ ] (3) Implementar acoes de Rebalanceamento para cada caso:
-    func (node *BSTNode) RebLeftLeft() *BSTNode // caso 1
-    func (node *BSTNode) RebLeftRight() *BSTNode // caso 2
-    func (node *BSTNode) RebRightRight() *BSTNode // caso 3
-    func (node *BSTNode) RebRightLeft() *BSTNode // caso 4
+    - func (node *BSTNode) RebLeftLeft() *BSTNode // caso 1
+    - func (node *BSTNode) RebLeftRight() *BSTNode // caso 2
+    - func (node *BSTNode) RebRightRight() *BSTNode // caso 3
+    - func (node *BSTNode) RebRightLeft() *BSTNode // caso 4
 
 - [ ] (4) Implementar funcao que identifica os casos e chama a funcao de Rebalanceamento correta:
-    func (node *BSTNode) Rebalance() *BSTNode
+    - func (node *BSTNode) Rebalance() *BSTNode
 
 - [ ] (5) Adicionar chamada para funcoes Rebalance() e UpdateProprieties() nas funcoes Add() e Remove()
