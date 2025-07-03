@@ -3,7 +3,7 @@
 - [x] (0) Adicionar adicionar altura e fator de balanco no struct
 
 
-(1) implementar funcao func (node *BSTNode) UpdatePropieties() [ ]
+- (1) implementar funcao func (node *BSTNode) UpdatePropieties() [x]
     ->atualizar altura de node
     ->atualizar fator de balanco de node
 
