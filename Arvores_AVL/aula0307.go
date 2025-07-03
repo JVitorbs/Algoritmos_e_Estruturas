@@ -4,43 +4,64 @@ import (
 	"fmt"
 )
 
-// Definição do nó da árvore
-type Node struct {
-	Value int
-	Left  *Node
-	Right *Node
-	height int
-	BalanFact int
+// Estrutura do nó da BST com altura e fator de balanço
+type BSTNode struct {
+	Value         int
+	Left, Right   *BSTNode
+	Height        int
+	BalanceFactor int
+}
+
+// Função auxiliar para obter altura de um nó
+func height(node *BSTNode) int {
+	if node == nil {
+		return 0
+	}
+	return node.Height
+}
+
+// Atualiza altura e fator de balanço
+func update(node *BSTNode) {
+	if node == nil {
+		return
+	}
+	leftHeight := height(node.Left)
+	rightHeight := height(node.Right)
+	node.Height = 1 + max(leftHeight, rightHeight)
+	node.BalanceFactor = leftHeight - rightHeight
 }
 
 // Inserir um valor na árvore
-func Insert(root *Node, value int) *Node {
-	if root == nil {
-		return &Node{Value: value}
+func Add(node *BSTNode, value int) *BSTNode {
+	if node == nil {
+		return &BSTNode{Value: value, Height: 1}
 	}
-	if value < root.Value {
-		root.Left = Insert(root.Left, value)
-	} else if value > root.Value {
-		root.Right = Insert(root.Right, value)
+	if value < node.Value {
+		node.Left = Add(node.Left, value)
+	} else if value > node.Value {
+		node.Right = Add(node.Right, value)
+	} else {
+		return node // ignora duplicados
 	}
-	return root
+	update(node)
+	return node
 }
 
 // Buscar um valor na árvore
-func Search(root *Node, value int) bool {
-	if root == nil {
+func Find(node *BSTNode, value int) bool {
+	if node == nil {
 		return false
 	}
-	if value == root.Value {
+	if value == node.Value {
 		return true
-	} else if value < root.Value {
-		return Search(root.Left, value)
+	} else if value < node.Value {
+		return Find(node.Left, value)
 	}
-	return Search(root.Right, value)
+	return Find(node.Right, value)
 }
 
-// Encontrar o menor valor (usado na remoção)
-func findMin(node *Node) *Node {
+// Encontrar o menor valor na subárvore (usado na remoção)
+func findMin(node *BSTNode) *BSTNode {
 	current := node
 	for current.Left != nil {
 		current = current.Left
@@ -49,62 +70,63 @@ func findMin(node *Node) *Node {
 }
 
 // Remover um valor da árvore
-func Remove(root *Node, value int) *Node {
-	if root == nil {
+func Remove(node *BSTNode, value int) *BSTNode {
+	if node == nil {
 		return nil
 	}
-	if value < root.Value {
-		root.Left = Remove(root.Left, value)
-	} else if value > root.Value {
-		root.Right = Remove(root.Right, value)
+	if value < node.Value {
+		node.Left = Remove(node.Left, value)
+	} else if value > node.Value {
+		node.Right = Remove(node.Right, value)
 	} else {
-		// Caso com 1 ou nenhum filho
-		if root.Left == nil {
-			return root.Right
+		if node.Left == nil {
+			return node.Right
+		} else if node.Right == nil {
+			return node.Left
 		}
-		if root.Right == nil {
-			return root.Left
-		}
-		// Caso com dois filhos
-		minNode := findMin(root.Right)
-		root.Value = minNode.Value
-		root.Right = Remove(root.Right, minNode.Value)
+		minBSTNode := findMin(node.Right)
+		node.Value = minBSTNode.Value
+		node.Right = Remove(node.Right, minBSTNode.Value)
 	}
-	return root
+	update(node)
+	return node
 }
 
 // Percurso em ordem (in-order)
-func InOrder(root *Node) {
-	if root != nil {
-		InOrder(root.Left)
-		fmt.Print(root.Value, " ")
-		InOrder(root.Right)
+func InOrder(node *BSTNode) {
+	if node != nil {
+		InOrder(node.Left)
+		fmt.Printf("%d (H:%d, B:%d) ", node.Value, node.Height, node.BalanceFactor)
+		InOrder(node.Right)
 	}
 }
 
-
+// Função utilitária
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
 
 // Função principal
 func main() {
-	var root *Node
+	var root *BSTNode
+	values := []int{40, 20, 10, 30, 60, 50, 70}
 
-	// Inserções
-	values := []int{50, 30, 70, 20, 40, 60, 80}
 	for _, v := range values {
-		root = Insert(root, v)
+		root = Add(root, v)
 	}
 
-	fmt.Print("In-Order: ")
+	fmt.Print("InOrder com altura e fator de balanço: ")
 	InOrder(root)
 	fmt.Println()
 
-	// Busca
-	fmt.Println("Buscar 40:", Search(root, 40)) // true
-	fmt.Println("Buscar 100:", Search(root, 100)) // false
+	fmt.Println("Buscar 30:", Find(root, 30))   // true
+	fmt.Println("Buscar 100:", Find(root, 100)) // false
 
-	// Remoção
-	root = Remove(root, 70)
-	fmt.Print("Após remover 70: ")
+	root = Remove(root, 20)
+	fmt.Print("Após remover 20: ")
 	InOrder(root)
 	fmt.Println()
 }
