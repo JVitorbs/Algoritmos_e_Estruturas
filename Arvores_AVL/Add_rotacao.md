@@ -1,4 +1,4 @@
-# Revisar codigo de BST e seguir os seguintes passos
+## **Revisar codigo de BST e seguir os seguintes passos**
 - [x](0) Adicionar adicionar altura e fator de balanco no struct
 
 
