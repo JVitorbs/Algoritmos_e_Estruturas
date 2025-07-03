@@ -1,5 +1,5 @@
 # Revisar codigo de BST e seguir os seguintes passos
-(0) Adicionar adicionar altura e fator de balanco no struct [x]
+## *(0) Adicionar adicionar altura e fator de balanco no struct* [x]
 
 (1) implementar funcao func (node *BSTNode) UpdatePropieties() [ ]
     ->atualizar altura de node
