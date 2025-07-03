@@ -1,5 +1,5 @@
 # Revisar codigo de BST e seguir os seguintes passos
-## *(0) Adicionar adicionar altura e fator de balanco no struct* 
+## **(0) Adicionar adicionar altura e fator de balanco no struct**
     - [x] Altura
     - [x] Fator de Balanco
 
